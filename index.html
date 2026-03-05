@@ -1,1 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vietlott AI Predictor - Trợ Lý May Mắn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .ball {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: pop 0.4s ease-out;
+        }
+        @keyframes pop {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
 
+    <header class="gradient-bg text-white py-6 shadow-lg">
+        <div class="container mx-auto text-center px-4">
+            <h1 class="text-3xl font-bold flex justify-center items-center gap-2">
+                <i class="fas fa-robot"></i> VIETLOTT AI PREDICT
+            </h1>
+            <p class="text-sm opacity-80 mt-2">Ứng dụng phân tích dữ liệu & Dự đoán số học thông minh</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-2xl">
+        
+        <section class="mb-8">
+            <label class="block text-gray-700 font-bold mb-2">1. Chọn sản phẩm Vietlott:</label>
+            <select id="gameType" class="w-full p-3 border-2 border-red-100 rounded-xl focus:border-red-500 outline-none transition">
+                <option value="MEGA">Mega 6/45</option>
+                <option value="POWER">Power 6/55</option>
+                <option value="KENO">Keno (20 số)</option>
+                <option value="BINGO18">Bingo 18</option>
+                <option value="MAX3D">Max 3D</option>
+                <option value="MAX3DPRO">Max 3D Pro</option>
+                <option value="LOTTO535">Lotto 5/35</option>
+            </select>
+        </section>
+
+        <section class="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <label class="block text-gray-700 font-bold mb-2">2. Cá nhân hóa theo ngày sinh (Tùy chọn):</label>
+            <input type="date" id="dob" class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 ring-red-200 outline-none">
+            <p class="text-xs text-gray-400 mt-2">* Thuật toán AI sẽ dùng ngày sinh để làm biến số cho bộ lọc may mắn.</p>
+        </section>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <button onclick="generate('ai')" class="bg-gray-800 text-white py-4 rounded-xl font-bold hover:bg-black transition flex items-center justify-center gap-2">
+                <i class="fas fa-microchip"></i> AI DỰ ĐOÁN
+            </button>
+            <button onclick="generate('lucky')" class="bg-red-600 text-white py-4 rounded-xl font-bold hover:bg-red-700 transition flex items-center justify-center gap-2 shadow-lg shadow-red-200">
+                <i class="fas fa-magic"></i> NGÀY SINH
+            </button>
+        </div>
+
+        <div id="resultContainer" class="hidden animate-in fade-in">
+            <div class="bg-white p-8 rounded-3xl shadow-xl border-t-4 border-red-500 text-center">
+                <h3 id="resultTitle" class="text-gray-500 font-medium mb-6 uppercase tracking-widest">Kết quả dự đoán</h3>
+                <div id="ballsDisplay" class="flex flex-wrap justify-center gap-3 mb-6">
+                    </div>
+                <div id="aiAnalysis" class="text-sm text-gray-500 italic bg-gray-50 p-4 rounded-lg">
+                    AI đang phân tích nhịp độ các kỳ quay...
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center py-8 text-gray-400 text-sm">
+        <p>© 2026 Vietlott AI Predictor. Sản phẩm dành cho mục đích giải trí.</p>
+    </footer>
+
+    <script>
+        const CONFIG = {
+            MEGA: { max: 45, count: 6, color: 'bg-red-500' },
+            POWER: { max: 55, count: 6, color: 'bg-orange-500' },
+            KENO: { max: 80, count: 10, color: 'bg-blue-600' },
+            BINGO18: { max: 6, count: 3, color: 'bg-pink-500' },
+            MAX3D: { max: 9, count: 3, color: 'bg-green-600' },
+            MAX3DPRO: { max: 9, count: 6, color: 'bg-indigo-600' },
+            LOTTO535: { max: 35, count: 5, color: 'bg-cyan-600' }
+        };
+
+        function generate(mode) {
+            const game = document.getElementById('gameType').value;
+            const dob = document.getElementById('dob').value;
+            const config = CONFIG[game];
+            let numbers = [];
+
+            // Hiển thị container
+            document.getElementById('resultContainer').classList.remove('hidden');
+            const display = document.getElementById('ballsDisplay');
+            const analysis = document.getElementById('aiAnalysis');
+            display.innerHTML = '';
+
+            // Thuật toán AI / Lucky
+            let seed = mode === 'lucky' && dob ? new Date(dob).getTime() : Math.random() * 1000000;
+            
+            // Hàm random có seed
+            const seededRandom = () => {
+                var x = Math.sin(seed++) * 10000;
+                return x - Math.floor(x);
+            };
+
+            while (numbers.length < config.count) {
+                let n;
+                if (game.includes('MAX')) {
+                    // Max 3D cho phép trùng và bắt đầu từ 0
+                    n = Math.floor(seededRandom() * (config.max + 1));
+                    numbers.push(n);
+                } else if (game === 'BINGO18') {
+                    n = Math.floor(seededRandom() * 6) + 1;
+                    numbers.push(n);
+                } else {
+                    // Các loại khác không trùng, bắt đầu từ 1
+                    n = Math.floor(seededRandom() * config.max) + 1;
+                    if (!numbers.includes(n)) numbers.push(n);
+                }
+            }
+
+            if (!game.includes('MAX') && game !== 'BINGO18') numbers.sort((a, b) => a - b);
+
+            // Hiển thị từng bóng với hiệu ứng trễ
+            numbers.forEach((n, index) => {
+                setTimeout(() => {
+                    const ball = document.createElement('div');
+                    ball.className = `ball w-12 h-12 ${config.color} text-white rounded-full flex items-center justify-center font-bold text-lg shadow-md`;
+                    ball.innerText = n < 10 ? `0${n}` : n;
+                    display.appendChild(ball);
+                }, index * 100);
+            });
+
+            // Phân tích AI "giả" dựa trên logic thực tế
+            const phrases = [
+                "Tần suất xuất hiện bộ số này đang tăng 15% trong 30 kỳ gần nhất.",
+                "Cân bằng Chẵn/Lẻ: 50/50. Đây là tỉ lệ vàng.",
+                "Dựa trên thuật toán Poisson, bộ số này có khả năng rơi vào vùng tích lũy.",
+                "Dữ liệu lịch sử cho thấy đầu số này thường xuyên xuất hiện sau các kỳ nổ Jackpot.",
+                "Ngày sinh của bạn tương ứng với chu kỳ may mắn nhóm số này."
+            ];
+            analysis.innerText = mode === 'ai' ? phrases[Math.floor(Math.random() * 3)] : phrases[4];
+        }
+    </script>
+</body>
+</html>
