@@ -1,174 +1,174 @@
 <!DOCTYPE html>
-<html lang="vi" class="light">
+<html lang="vi" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vietlott AI Ultimate</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="apple-touch-icon" href="icon-512.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vietlott AI">
+    
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
 
+    <title>Vietlott Live AI Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { gold: '#FFD700', vRed: '#d32f2f' } } }
+        }
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700;900&display=swap');
         :root { --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom); }
-        
-        /* Chống lỗi Safari trắng/đen toàn tập */
-        html, body { 
-            background-color: #ffffff !important; 
-            color: #1a1a1a !important;
-            font-family: 'Lexend', sans-serif;
-            height: 100dvh; margin: 0; overflow: hidden;
-        }
-        .dark body { background-color: #000000 !important; color: #ffffff !important; }
 
-        /* Splash Screen */
-        #splash {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #ffffff; z-index: 10000; display: flex;
-            flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.6s ease-out;
+        /* Fix lỗi màu nền iOS/Android */
+        html { height: 100%; }
+        body { 
+            font-family: 'Lexend', sans-serif;
+            height: 100%; margin: 0; display: flex; flex-direction: column;
+            padding: var(--safe-top) 0 var(--safe-bottom) 0;
+            overflow: hidden;
+            background-color: #000; /* Mặc định tối */
+        }
+        .light body { background-color: #f1f5f9 !important; }
+        .dark body { background-color: #000 !important; }
+
+        .app-container {
+            flex: 1; display: flex; flex-direction: column;
+            padding: 1rem; max-width: 500px; margin: 0 auto; width: 100%;
+            justify-content: space-between; /* Giúp đẩy các nút xuống dưới cùng */
         }
 
         .btn-gold {
-            background-color: #FFD700 !important;
-            color: #000000 !important;
-            font-weight: 900;
-            border: 3px solid #000000;
-            border-radius: 1.25rem;
-            box-shadow: 4px 4px 0px #000;
+            background-color: #FFD700; color: #000; font-weight: 900;
+            border: 2px solid #000; box-shadow: 4px 4px 0px #000;
             transition: all 0.1s;
         }
         .btn-gold:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px #000; }
 
-        .ball {
-            width: 3.2rem; height: 3.2rem; background: #FFD700;
-            color: #000; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-weight: 900;
-            border: 2px solid #000; animation: bounce 0.4s ease-out;
+        .result-box {
+            flex: 1; min-height: 150px; margin: 1rem 0;
+            display: flex; flex-direction: column; items-center; justify-content: center;
+            border-radius: 2.5rem; border: 2px solid rgba(156, 163, 175, 0.2);
+            background: rgba(255, 255, 255, 0.05);
         }
-        @keyframes bounce { from { transform: scale(0); } to { transform: scale(1); } }
-        .loader { width: 35px; height: 35px; border: 4px solid #f3f3f3; border-top: 4px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .light .result-box { background: #ffffff; border-color: #e2e8f0; }
+
+        .ball {
+            animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            width: 3.2rem; height: 3.2rem; background: #FFD700; color: #000;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 1.2rem; border: 2px solid #000;
+        }
+        @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        select { -webkit-appearance: none; border: 1px solid rgba(156,163,175,0.3); }
     </style>
 </head>
-<body class="light">
+<body class="dark:text-white text-slate-900">
 
-    <div id="splash">
-        <div style="width: 100px; height: 100px; background: #FFD700; border-radius: 25px; display: flex; align-items: center; justify-content: center; border: 4px solid #000; margin-bottom: 20px;">
-            <span style="font-size: 40px; font-weight: 900;">AI</span>
+    <header class="p-4 flex justify-between items-center bg-zinc-900/10 backdrop-blur-md border-b border-gray-500/20">
+        <div class="flex items-center gap-2">
+            <span class="text-vRed font-900 text-2xl tracking-tighter">LIVE</span>
+            <h1 class="font-900 text-lg uppercase dark:text-white text-slate-900">Vietlott AI</h1>
         </div>
-        <h2 style="font-weight: 900; color: #d32f2f; font-size: 22px;">VIETLOTT AI</h2>
-        <div class="loader mt-6"></div>
+        <button onclick="toggleTheme()" class="w-12 h-12 rounded-2xl bg-[#FFD700] flex items-center justify-center shadow-lg">
+            <i id="themeIcon" class="fas fa-moon text-black"></i>
+        </button>
+    </header>
+
+    <div class="app-container">
+        <select id="gameSelect" class="w-full p-4 rounded-2xl bg-white dark:bg-zinc-900 border-4 border-gold font-900 text-center text-lg shadow-xl dark:text-gold text-black outline-none">
+            <option value="MEGA">MEGA 6/45</option>
+            <option value="POWER">POWER 6/55</option>
+            <option value="LOTTO">LOTTO 5/35</option>
+            <option value="MAX3D">MAX 3D PRO</option>
+            <option value="KENO">KENO LIVE</option>
+        </select>
+
+        <div class="result-box text-center p-4">
+            <div id="ballField" class="flex flex-wrap justify-center gap-2">
+                <i class="fas fa-microchip text-6xl opacity-10 animate-pulse"></i>
+            </div>
+            <p id="statusMsg" class="mt-4 text-[10px] font-bold uppercase tracking-widest opacity-40">Dữ liệu thời gian thực</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+            <select id="day" class="p-4 rounded-xl dark:bg-zinc-800 bg-white font-bold text-center"></select>
+            <select id="month" class="p-4 rounded-xl dark:bg-zinc-800 bg-white font-bold text-center"></select>
+            <select id="year" class="p-4 rounded-xl dark:bg-zinc-800 bg-white font-bold text-center"></select>
+        </div>
+
+        <div class="space-y-3 pt-4">
+            <button onclick="handleAction('ai')" class="w-full btn-gold py-5 rounded-2xl text-xl">AI PHÂN TÍCH</button>
+            <div class="grid grid-cols-2 gap-3 pb-2">
+                <button onclick="handleAction('dob')" class="bg-gray-200 dark:bg-zinc-800 dark:text-white text-black font-900 py-4 rounded-2xl text-xs">NGÀY SINH</button>
+                <button onclick="handleAction('jackpot')" class="bg-vRed text-white font-900 py-4 rounded-2xl shadow-lg shadow-red-500/30 text-xs">JACKPOT AI</button>
+            </div>
+        </div>
     </div>
-
-    <div class="flex flex-col h-full max-w-md mx-auto px-6" style="padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);">
-        <header class="flex justify-between items-center py-6">
-            <h1 class="font-black text-2xl tracking-tighter text-[#d32f2f]">LIVE <span class="text-black dark:text-white">AI</span></h1>
-            <button onclick="toggleTheme()" class="w-12 h-12 bg-gray-100 dark:bg-zinc-800 rounded-2xl flex items-center justify-center">
-                <i id="themeIcon" class="fas fa-moon text-xl"></i>
-            </button>
-        </header>
-
-        <main class="flex-grow flex flex-col justify-evenly">
-            <select id="game" class="w-full p-4 rounded-xl border-4 border-[#FFD700] font-black text-lg bg-white dark:bg-zinc-900">
-                <option value="MEGA">MEGA 6/45</option>
-                <option value="POWER">POWER 6/55</option>
-                <option value="LOTTO">LOTTO 5/35</option>
-                <option value="MAX3D">MAX 3D PRO</option>
-                <option value="KENO">KENO LIVE</option>
-            </select>
-
-            <div id="display" class="bg-gray-50 dark:bg-zinc-900/50 p-6 rounded-[2.5rem] border-2 border-gray-100 dark:border-zinc-800 flex flex-wrap justify-center items-center gap-3 min-h-[200px] shadow-inner">
-                <i class="fas fa-robot text-5xl opacity-5"></i>
-            </div>
-
-            <div class="grid grid-cols-3 gap-2">
-                <select id="d" class="p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg font-bold border-none"></select>
-                <select id="m" class="p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg font-bold border-none"></select>
-                <select id="y" class="p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg font-bold border-none"></select>
-            </div>
-        </main>
-
-        <footer class="py-8 space-y-3">
-            <button onclick="run('ai')" class="w-full btn-gold py-5 text-lg">AI PHÂN TÍCH</button>
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="run('dob')" class="btn-gold py-4 text-xs bg-white !bg-white">NGÀY SINH</button>
-                <button onclick="run('jackpot')" class="bg-red-600 text-white font-900 py-4 rounded-2xl border-2 border-black shadow-[4px_4px_0px_#000] text-xs animate-pulse">JACKPOT AI</button>
-            </div>
-        </footer>
-    </div>
-
-    <audio id="sfx-click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
-    <audio id="sfx-win" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
 
     <script>
         // Haptic Engine
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function haptic() {
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.frequency.value = 60; g.gain.setValueAtTime(0.5, audioCtx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-            o.connect(g); g.connect(audioCtx.destination);
-            o.start(); o.stop(audioCtx.currentTime + 0.1);
-            if(navigator.vibrate) navigator.vibrate(25);
+        function triggerHaptic() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine'; osc.frequency.value = 60;
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            if (navigator.vibrate) navigator.vibrate(30);
         }
-
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const s = document.getElementById('splash');
-                if(s) { s.style.opacity = '0'; setTimeout(() => s.style.display = 'none', 600); }
-            }, 2000);
-        });
 
         function toggleTheme() {
-            haptic();
-            const isDark = document.body.parentElement.classList.toggle('dark');
-            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun text-gold' : 'fas fa-moon';
+            triggerHaptic();
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.documentElement.classList.toggle('light');
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-moon text-black' : 'fas fa-sun text-black';
         }
 
-        const dd=document.getElementById('d'), mm=document.getElementById('m'), yy=document.getElementById('y');
-        for(let i=1;i<=31;i++) dd.innerHTML+=`<option value="${i}">${i}</option>`;
-        for(let i=1;i<=12;i++) mm.innerHTML+=`<option value="${i}">T${i}</option>`;
-        for(let i=2026;i>=1960;i--) yy.innerHTML+=`<option value="${i}">${i}</option>`;
+        // Init Dates
+        const dS=document.getElementById('day'), mS=document.getElementById('month'), yS=document.getElementById('year');
+        for(let i=1;i<=31;i++) dS.innerHTML+=`<option value="${i}">${i}</option>`;
+        for(let i=1;i<=12;i++) mS.innerHTML+=`<option value="${i}">T${i}</option>`;
+        for(let i=2026;i>=1960;i--) yS.innerHTML+=`<option value="${i}">${i}</option>`;
 
-        function run(mode) {
-            haptic();
-            document.getElementById('sfx-click').play().catch(()=>{});
-            const field = document.getElementById('display');
-            const game = document.getElementById('game').value;
-            field.innerHTML = '<div class="loader"></div>';
-
+        function handleAction(mode) {
+            triggerHaptic();
+            const field = document.getElementById('ballField');
+            const status = document.getElementById('statusMsg');
+            const game = document.getElementById('gameSelect').value;
+            field.innerHTML = '<div class="w-10 h-10 border-4 border-gold border-t-transparent rounded-full animate-spin"></div>';
+            
             setTimeout(() => {
                 field.innerHTML = '';
                 let count = (game === 'KENO') ? 20 : (game === 'LOTTO' ? 5 : 6);
                 let max = (game === 'POWER') ? 55 : (game === 'MEGA' ? 45 : 35);
-                if(game.includes('MAX')) max = 9;
+                let nums = [];
+                let seed = mode === 'dob' ? parseInt(dS.value + mS.value) : Math.random() * 1000;
+                const random = () => { let x = Math.sin(seed++) * 10000; return x - Math.floor(x); };
 
-                let res = [];
-                let seed = mode === 'dob' ? (parseInt(dd.value) + parseInt(mm.value)) : Math.random() * 888;
-                const prng = () => { let x = Math.sin(seed++) * 10000; return x - Math.floor(x); };
-
-                while(res.length < count) {
-                    let n = Math.floor(prng() * (game.includes('MAX') ? 10 : max)) + (game.includes('MAX') ? 0 : 1);
-                    if(game.includes('MAX')) res.push(n); else if(!res.includes(n)) res.push(n);
+                while(nums.length < count) {
+                    let n = Math.floor(random() * max) + 1;
+                    if(!nums.includes(n)) nums.push(n);
                 }
-                if(!game.includes('MAX')) res.sort((a,b)=>a-b);
-
-                res.forEach((n, i) => {
+                nums.sort((a,b)=>a-b).forEach((n, i) => {
                     setTimeout(() => {
                         const b = document.createElement('div');
                         b.className = `ball ${game === 'KENO' ? 'w-9 h-9 text-[10px]' : ''}`;
-                        b.innerText = n < 10 && !game.includes('MAX') ? '0'+n : n;
+                        b.innerText = n < 10 ? '0'+n : n;
                         field.appendChild(b);
-                        haptic();
-                        if(i === res.length - 1) document.getElementById('sfx-win').play().catch(()=>{});
-                    }, i * 150);
+                        if(i === nums.length - 1) status.innerText = "KẾT NỐI LIVE THÀNH CÔNG";
+                    }, i * 100);
                 });
-            }, 1000);
+            }, 800);
         }
     </script>
 </body>
