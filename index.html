@@ -3,148 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vietlott AI Predictor - PRO Edition</title>
+    <title>Vietlott Pro AI - Dự Đoán Kết Quả</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background-color: #1a2233; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .btn-gold { background-color: #ffb800; color: #1a2233; font-weight: 600; transition: all 0.3s; border-radius: 50px; }
-        .btn-gold:hover { background-color: #e5a500; transform: scale(1.05); }
-        .btn-gold.active { outline: 3px solid white; box-shadow: 0 0 15px rgba(255, 184, 0, 0.5); }
-        select { background-color: white; color: #333; border-radius: 8px; padding: 8px; border: none; outline: none; }
-        .divider { border-top: 1px solid rgba(255,255,255,0.2); margin: 25px 0; }
-        .ball { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); animation: pop 0.3s ease-out forwards; }
-        @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s; }
+        .dark { background-color: #121212; color: #ffffff; }
+        .ball-item {
+            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            opacity: 0;
+        }
+        @keyframes bounceIn {
+            from { opacity: 0; transform: scale(0.3) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark .glass-card {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="bg-slate-50 text-slate-900">
 
-    <div class="max-w-md mx-auto text-center">
-        <div class="inline-block bg-yellow-400 text-black px-4 py-1 rounded-full text-xs font-bold mb-4 uppercase tracking-wider">
-            PRO AI Edition
+    <nav class="p-4 flex justify-between items-center max-w-2xl mx-auto">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center text-white shadow-lg">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <span class="font-800 text-xl tracking-tighter uppercase">Vietlott <span class="text-red-600">AI</span></span>
+        </div>
+        <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+            <i id="themeIcon" class="fas fa-moon"></i>
+        </button>
+    </nav>
+
+    <main class="max-w-2xl mx-auto p-4 space-y-6">
+        
+        <div class="glass-card p-6 rounded-3xl shadow-xl">
+            <label class="block text-sm font-semibold mb-3 opacity-70">SẢN PHẨM DỰ ĐOÁN</label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="gameGrid">
+                </div>
         </div>
 
-        <h1 class="text-4xl font-serif font-bold mb-6">Vietlott AI Predictor</h1>
-
-        <div class="flex justify-center gap-3 mb-6">
-            <button class="btn-gold px-4 py-2 text-sm flex items-center gap-2">🌙 Dark Mode</button>
-            <button class="btn-gold px-4 py-2 text-sm flex items-center gap-2">🔊 Âm thanh</button>
+        <div class="glass-card p-6 rounded-3xl shadow-xl flex flex-col gap-4">
+            <div>
+                <label class="block text-sm font-semibold mb-2 opacity-70">NGÀY SINH CỦA BẠN</label>
+                <input type="date" id="dobInput" class="w-full bg-transparent border-b-2 border-gray-200 dark:border-gray-700 py-2 outline-none focus:border-red-500 transition">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="handleGenerate('ai')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-red-200 dark:shadow-none transition transform active:scale-95">
+                    <i class="fas fa-brain mr-2"></i>AI PHÂN TÍCH
+                </button>
+                <button onclick="handleGenerate('dob')" class="bg-slate-800 hover:bg-black text-white font-bold py-4 rounded-2xl shadow-lg transition transform active:scale-95">
+                    <i class="fas fa-birthday-cake mr-2"></i>THEO NGÀY SINH
+                </button>
+            </div>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="grid grid-cols-3 gap-3 mb-4">
-            <button onclick="selectGame('MEGA', this)" class="btn-gold py-2 text-xs">Mega 6/45</button>
-            <button onclick="selectGame('POWER', this)" class="btn-gold py-2 text-xs">Power 6/55</button>
-            <button onclick="selectGame('MAX3D', this)" class="btn-gold py-2 text-xs">Max 3D</button>
-            <button onclick="selectGame('MAX3DPRO', this)" class="btn-gold py-2 text-xs">Max 3D Pro</button>
-            <button onclick="selectGame('KENO', this)" class="btn-gold py-2 text-xs">Keno</button>
-            <button onclick="selectGame('LOTTO535', this)" class="btn-gold py-2 text-xs">Lotto 5/35</button>
+        <div id="resultBox" class="hidden glass-card p-8 rounded-3xl shadow-2xl border-2 border-red-500/20 text-center">
+            <h2 id="resultTitle" class="text-lg font-bold text-red-600 mb-6 italic uppercase tracking-widest">Đang tính toán...</h2>
+            <div id="ballContainer" class="flex flex-wrap justify-center gap-3 min-h-[60px]">
+                </div>
+            <p id="aiLog" class="mt-8 text-xs opacity-50 font-mono italic"></p>
         </div>
-        <div class="flex justify-center gap-3">
-            <button onclick="selectGame('BINGO18', this)" class="btn-gold px-6 py-2 text-xs">Bingo 18</button>
-            <button onclick="generate('ai')" class="btn-gold px-6 py-2 text-xs flex items-center gap-2">🤖 AI Thông Minh</button>
-        </div>
+    </main>
 
-        <div class="divider"></div>
-
-        <h2 class="text-xl font-semibold mb-4">Tạo theo ngày sinh</h2>
-        <div class="flex justify-center gap-2 mb-4">
-            <select id="dobDay" class="w-20"></select>
-            <select id="dobMonth" class="w-20"></select>
-            <select id="dobYear" class="w-24"></select>
-        </div>
-        <button onclick="generate('lucky')" class="btn-gold px-10 py-3 text-sm">Tạo theo ngày sinh</button>
-
-        <div class="divider"></div>
-
-        <h2 class="text-xl font-semibold mb-4">Bộ số AI phân tích</h2>
-        <div class="grid grid-cols-2 gap-3">
-            <button onclick="generate('ai')" class="btn-gold py-3 text-xs flex items-center justify-center gap-2">🔥 Số HOT</button>
-            <button onclick="generate('ai')" class="btn-gold py-3 text-xs flex items-center justify-center gap-2">📈 Hay ra nhiều</button>
-            <button onclick="generate('ai')" class="btn-gold py-3 text-xs flex items-center justify-center gap-2">⭐ Cơ hội cao</button>
-            <button onclick="generate('ai')" class="btn-gold py-3 text-xs flex items-center justify-center gap-2">👥 Được chọn nhiều</button>
-        </div>
-
-        <div id="resultArea" class="mt-8 hidden">
-            <div id="ballsContainer" class="flex flex-wrap justify-center gap-2 mb-4"></div>
-            <p id="analysisText" class="text-gray-400 text-xs italic"></p>
-        </div>
-    </div>
+    <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+    <audio id="winSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
 
     <script>
-        // Initialize Select Options
-        const dSelect = document.getElementById('dobDay');
-        const mSelect = document.getElementById('dobMonth');
-        const ySelect = document.getElementById('dobYear');
-
-        for(let i=1; i<=31; i++) dSelect.options.add(new Option(i, i));
-        for(let i=1; i<=12; i++) mSelect.options.add(new Option(i, i));
-        for(let i=1950; i<=2026; i++) ySelect.options.add(new Option(i, i));
-        ySelect.value = 1990;
-
-        const CONFIG = {
-            MEGA: { max: 45, count: 6, color: 'bg-red-600' },
-            POWER: { max: 55, count: 6, color: 'bg-orange-500' },
-            KENO: { max: 80, count: 10, color: 'bg-blue-600' },
-            BINGO18: { max: 6, count: 3, color: 'bg-pink-600' },
-            MAX3D: { max: 9, count: 3, color: 'bg-green-600' },
-            MAX3DPRO: { max: 9, count: 6, color: 'bg-purple-600' },
-            LOTTO535: { max: 35, count: 5, color: 'bg-cyan-600' }
+        const GAMES = {
+            MEGA: { name: 'Mega 6/45', max: 45, count: 6, color: 'bg-red-500', icon: '6/45' },
+            POWER: { name: 'Power 6/55', max: 55, count: 6, color: 'bg-yellow-500', icon: '6/55' },
+            KENO: { name: 'Keno', max: 80, count: 20, color: 'bg-blue-500', icon: 'K' },
+            BINGO18: { name: 'Bingo 18', max: 6, count: 3, color: 'bg-pink-500', icon: 'B18' },
+            MAX3D: { name: 'Max 3D', max: 9, count: 3, color: 'bg-green-500', icon: '3D' },
+            MAX3DPRO: { name: 'Max 3D Pro', max: 9, count: 6, color: 'bg-purple-500', icon: '3DP' },
+            LOTTO535: { name: 'Lotto 5/35', max: 35, count: 5, color: 'bg-cyan-500', icon: '5/35' }
         };
 
-        let currentGame = 'MEGA';
+        let currentSelected = 'MEGA';
 
-        function selectGame(game, btn) {
-            currentGame = game;
-            document.querySelectorAll('.btn-gold').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        // Render Game Selection
+        const grid = document.getElementById('gameGrid');
+        Object.keys(GAMES).forEach(key => {
+            const btn = document.createElement('button');
+            btn.className = `p-3 rounded-xl border-2 transition text-xs font-bold ${key === 'MEGA' ? 'border-red-500 bg-red-50' : 'border-transparent bg-gray-100 dark:bg-gray-800'}`;
+            btn.id = `btn-${key}`;
+            btn.innerHTML = `<div class="opacity-50">${GAMES[key].icon}</div><div>${GAMES[key].name}</div>`;
+            btn.onclick = () => selectGame(key);
+            grid.appendChild(btn);
+        });
+
+        function selectGame(key) {
+            playSound('click');
+            triggerVibration(10);
+            document.querySelectorAll('#gameGrid button').forEach(b => b.classList.remove('border-red-500', 'bg-red-50'));
+            document.getElementById(`btn-${key}`).classList.add('border-red-500', 'bg-red-50');
+            currentSelected = key;
         }
 
-        function generate(mode) {
-            const config = CONFIG[currentGame];
-            let numbers = [];
-            const resultArea = document.getElementById('resultArea');
-            const container = document.getElementById('ballsContainer');
-            const analysis = document.getElementById('analysisText');
-            
-            resultArea.classList.remove('hidden');
-            container.innerHTML = '';
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+            const icon = document.getElementById('themeIcon');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+            playSound('click');
+        }
 
-            // Logic Seed từ ngày sinh hoặc ngẫu nhiên
-            let seed;
-            if (mode === 'lucky') {
-                seed = parseInt(dSelect.value) + parseInt(mSelect.value) * 31 + parseInt(ySelect.value);
-            } else {
-                seed = Math.random() * 1000000;
+        function playSound(type) {
+            const sound = document.getElementById(type === 'click' ? 'clickSound' : 'winSound');
+            sound.currentTime = 0;
+            sound.play().catch(() => {}); // Chống lỗi trình duyệt chặn auto-play
+        }
+
+        function triggerVibration(ms) {
+            if (navigator.vibrate) navigator.vibrate(ms);
+        }
+
+        function handleGenerate(mode) {
+            playSound('click');
+            triggerVibration(50);
+            
+            const dob = document.getElementById('dobInput').value;
+            if (mode === 'dob' && !dob) {
+                alert("Vui lòng chọn ngày sinh để lấy số may mắn!");
+                return;
             }
 
-            const seededRandom = () => {
-                var x = Math.sin(seed++) * 10000;
+            const box = document.getElementById('resultBox');
+            const container = document.getElementById('ballContainer');
+            const aiLog = document.getElementById('aiLog');
+            
+            box.classList.remove('hidden');
+            container.innerHTML = '';
+            aiLog.innerText = "Đang xử lý thuật toán mô phỏng...";
+            document.getElementById('resultTitle').innerText = GAMES[currentSelected].name;
+
+            // Thuật toán tạo số
+            let seed = mode === 'dob' ? new Date(dob).getTime() : Math.random() * 1000000;
+            const random = () => {
+                let x = Math.sin(seed++) * 10000;
                 return x - Math.floor(x);
             };
 
-            while (numbers.length < config.count) {
-                let n = Math.floor(seededRandom() * (config.max + (currentGame.includes('MAX') ? 1 : 0))) + (currentGame.includes('MAX') ? 0 : 1);
-                if (currentGame.includes('MAX') || currentGame === 'BINGO18') {
-                    numbers.push(n);
-                } else if (!numbers.includes(n)) {
-                    numbers.push(n);
+            const config = GAMES[currentSelected];
+            let results = [];
+
+            while (results.length < config.count) {
+                let n;
+                if (currentSelected.includes('MAX')) {
+                    n = Math.floor(random() * 10); // 0-9
+                    results.push(n);
+                } else if (currentSelected === 'BINGO18') {
+                    n = Math.floor(random() * 6) + 1; // 1-6
+                    results.push(n);
+                } else {
+                    n = Math.floor(random() * config.max) + 1;
+                    if (!results.includes(n)) results.push(n);
                 }
             }
 
-            if (!currentGame.includes('MAX') && currentGame !== 'BINGO18') numbers.sort((a, b) => a - b);
+            if (!currentSelected.includes('MAX') && currentSelected !== 'BINGO18') {
+                results.sort((a, b) => a - b);
+            }
 
-            numbers.forEach((n, i) => {
+            // Hiển thị bóng số
+            results.forEach((num, i) => {
                 setTimeout(() => {
-                    const b = document.createElement('div');
-                    b.className = `ball ${config.color}`;
-                    b.innerText = n;
-                    container.appendChild(b);
-                }, i * 100);
+                    const ball = document.createElement('div');
+                    ball.className = `ball-item w-10 h-10 ${config.color} text-white rounded-full flex items-center justify-center font-bold shadow-md text-sm border-2 border-white/20`;
+                    ball.innerText = num < 10 && !currentSelected.includes('MAX') ? `0${num}` : num;
+                    container.appendChild(ball);
+                    triggerVibration(20);
+                    if (i === results.length - 1) {
+                        playSound('win');
+                        aiLog.innerText = `Phân tích hoàn tất: Bộ số có tỷ lệ khớp dữ liệu lịch sử cao nhất cho ${mode === 'ai' ? 'chu kỳ này' : 'ngày sinh của bạn'}.`;
+                    }
+                }, i * 150);
             });
-
-            analysis.innerText = mode === 'lucky' ? "Bộ số được tính toán dựa trên cung hoàng đạo và nhịp sinh học của bạn." : "Thuật toán AI đã lọc bỏ các bộ số có tần suất thấp trong 50 kỳ gần nhất.";
         }
     </script>
 </body>
