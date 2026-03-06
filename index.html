@@ -32,7 +32,6 @@
             font-family: 'Lexend', sans-serif;
         }
 
-        /* Splash Screen Siêu Tốc (0.8s) */
         #splash {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -61,7 +60,6 @@
         .dark select { color: white !important; background-color: #1a1a1a !important; border: 2px solid #333; }
         .light select { color: black !important; background-color: white !important; border: 2px solid #cbd5e1; }
 
-        /* KHUNG KẾT QUẢ VÀ LOGO LÀM RÕ */
         .result-box {
             flex: 1; margin: 0.8rem 0; border-radius: 2.5rem;
             position: relative; display: flex; flex-direction: column; 
@@ -72,22 +70,29 @@
         .dark .result-box { background: rgba(30, 30, 30, 0.4); }
         .light .result-box { background: white; border-color: #e2e8f0; box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
 
-        /* Sửa lỗi Logo bị mờ/tối */
         .bg-icon { 
             position: absolute; width: 80%; height: 80%;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
             object-fit: contain; pointer-events: none; z-index: 0;
-            filter: saturate(1.2);
         }
         .dark .bg-icon { opacity: 0.35; filter: contrast(1.1) brightness(0.9); }
         .light .bg-icon { opacity: 0.45; filter: contrast(1.2); }
 
-        /* Ép màu chữ trạng thái cực rõ */
         #statusMsg { font-weight: 900; text-shadow: 0px 2px 4px rgba(0,0,0,0.3); }
         .dark #statusMsg { color: #FFFFFF; }
         .light #statusMsg { color: #1e293b; }
 
         #fireworks { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+
+        /* Nút điều khiển */
+        .ctrl-btn {
+            width: 3rem; height: 3rem; border-radius: 1rem;
+            background: #FFD700; color: #000;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+        .ctrl-btn:active { transform: scale(0.9); }
 
         .btn-main { background: #FFD700; color: #000; font-weight: 900; box-shadow: 4px 4px 0px #000; }
         .btn-main:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px #000; }
@@ -119,9 +124,14 @@
                 <div class="bg-vRed px-2 py-1 rounded text-white font-black italic text-[10px] animate-pulse">LIVE CONNECT</div>
                 <h1 class="font-900 text-xl tracking-tighter uppercase">Vietlott AI</h1>
             </div>
-            <button onclick="toggleTheme()" class="w-12 h-12 rounded-2xl bg-gold flex items-center justify-center shadow-lg active:scale-95">
-                <i id="themeIcon" class="fas fa-moon text-black"></i>
-            </button>
+            <div class="flex gap-2">
+                <button onclick="refreshApp()" class="ctrl-btn" title="Làm mới">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button onclick="toggleTheme()" class="ctrl-btn">
+                    <i id="themeIcon" class="fas fa-moon"></i>
+                </button>
+            </div>
         </header>
 
         <select id="game" class="w-full p-4 rounded-2xl font-900 text-lg shadow-xl mt-2">
@@ -140,7 +150,7 @@
             <div id="balls" class="flex flex-wrap justify-center gap-2 p-4 relative z-10">
                 <i id="netIcon" class="fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse"></i>
             </div>
-            <p id="statusMsg" class="mt-2 text-[11px] uppercase tracking-[0.2em] z-10 italic">Đang kiểm tra kết nối...</p>
+            <p id="statusMsg" class="mt-2 text-[11px] uppercase tracking-[0.2em] z-10 italic">Hệ thống sẵn sàng</p>
         </div>
 
         <div class="grid grid-cols-3 gap-2">
@@ -162,7 +172,6 @@
     <audio id="click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
 
     <script>
-        // Xử lý Pháo hoa
         const canvas = document.getElementById('fireworks');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -194,42 +203,43 @@
             if (particles.length > 0) requestAnimationFrame(animateFireworks);
         }
 
-        // Logic Mạng Thông Minh (Sửa lỗi 4G/5G/LTE)
         function updateNetworkIcon() {
             const icon = document.getElementById('netIcon');
             const statusText = document.getElementById('statusMsg');
-            
-            // Sử dụng API Network Information (chỉ hoạt động trên Chrome/Android/iOS qua Webkit)
             const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
             
             if (connection) {
                 const type = connection.type || connection.effectiveType;
-                // Phân loại mạng
                 if (type.includes('wifi')) {
                     icon.className = "fas fa-wifi text-gold opacity-40 text-5xl animate-pulse";
-                    statusText.innerText = "Hệ thống Wifi sẵn sàng";
-                } else if (type.includes('cellular') || type.includes('4g') || type.includes('5g') || type.includes('lte') || type.includes('3g')) {
-                    icon.className = "fas fa-signal text-gold opacity-40 text-5xl animate-pulse";
-                    statusText.innerText = "Dữ liệu di động sẵn sàng";
                 } else {
-                    icon.className = "fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse";
-                    statusText.innerText = "Hệ thống Cloud sẵn sàng";
+                    icon.className = "fas fa-signal text-gold opacity-40 text-5xl animate-pulse";
                 }
             } else {
-                // Dự phòng nếu trình duyệt không hỗ trợ API Network
                 icon.className = "fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse";
-                statusText.innerText = "Hệ thống sẵn sàng";
             }
+            statusText.innerText = "Hệ thống sẵn sàng";
         }
 
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === 'visible') {
-                document.getElementById('balls').innerHTML = '<i id="netIcon" class="fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse"></i>';
-                updateNetworkIcon();
-            }
-        });
+        // HÀM LÀM MỚI APP THỦ CÔNG
+        function refreshApp() {
+            haptic();
+            // Xoay icon nút refresh để tạo hiệu ứng phản hồi
+            const btnIcon = document.querySelector('.fa-sync-alt');
+            btnIcon.style.transition = "transform 0.5s ease";
+            btnIcon.style.transform = "rotate(360deg)";
+            
+            setTimeout(() => {
+                btnIcon.style.transform = "rotate(0deg)";
+                btnIcon.style.transition = "none";
+            }, 500);
 
-        // Splash screen 0.8s
+            // Đưa app về trạng thái ban đầu
+            document.getElementById('balls').innerHTML = '<i id="netIcon" class="fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse"></i>';
+            document.getElementById('statusMsg').innerText = "Hệ thống sẵn sàng";
+            updateNetworkIcon();
+        }
+
         window.onload = () => {
             updateNetworkIcon();
             setTimeout(() => {
@@ -255,7 +265,7 @@
             haptic();
             const isDark = document.documentElement.classList.toggle('dark');
             document.documentElement.classList.toggle('light');
-            document.getElementById('themeIcon').className = isDark ? 'fas fa-moon text-black' : 'fas fa-sun text-black';
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
         }
 
         const dd=document.getElementById('d'), mm=document.getElementById('m'), yy=document.getElementById('y');
