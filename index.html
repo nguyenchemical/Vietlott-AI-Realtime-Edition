@@ -11,7 +11,7 @@
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
 
-    <title>Vietlott Live AI Ultimate</title>
+    <title>Vietlott AI Trực Tiếp - Bản Cao Cấp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
@@ -32,6 +32,7 @@
             font-family: 'Lexend', sans-serif;
         }
 
+        /* Splash Screen 0.8s */
         #splash {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -84,7 +85,6 @@
 
         #fireworks { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
 
-        /* Nút điều khiển */
         .ctrl-btn {
             width: 3rem; height: 3rem; border-radius: 1rem;
             background: #FFD700; color: #000;
@@ -115,17 +115,17 @@
 
     <div id="splash">
         <img src="icon.png" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2313/2313982.png'">
-        <h2 class="text-gold mt-6 font-black text-xl tracking-tighter italic uppercase">Vietlott AI Ultimate</h2>
+        <h2 class="text-gold mt-6 font-black text-xl tracking-tighter italic uppercase">Vietlott AI Trực Tiếp</h2>
     </div>
 
     <div id="appBody" class="app-container">
         <header class="py-4 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <div class="bg-vRed px-2 py-1 rounded text-white font-black italic text-[10px] animate-pulse">LIVE CONNECT</div>
+                <div class="bg-vRed px-2 py-1 rounded text-white font-black italic text-[10px] animate-pulse">KẾT NỐI TRỰC TIẾP</div>
                 <h1 class="font-900 text-xl tracking-tighter uppercase">Vietlott AI</h1>
             </div>
             <div class="flex gap-2">
-                <button onclick="refreshApp()" class="ctrl-btn" title="Làm mới">
+                <button onclick="refreshApp()" class="ctrl-btn">
                     <i class="fas fa-sync-alt"></i>
                 </button>
                 <button onclick="toggleTheme()" class="ctrl-btn">
@@ -134,7 +134,7 @@
             </div>
         </header>
 
-        <select id="game" class="w-full p-4 rounded-2xl font-900 text-lg shadow-xl mt-2">
+        <select id="game" class="w-full p-4 rounded-2xl font-900 text-lg shadow-xl mt-2" onchange="saveState()">
             <option value="MEGA">MEGA 6/45</option>
             <option value="POWER">POWER 6/55</option>
             <option value="LOTTO">LOTTO 5/35</option>
@@ -154,9 +154,9 @@
         </div>
 
         <div class="grid grid-cols-3 gap-2">
-            <select id="d" class="p-4 rounded-xl font-bold text-center"></select>
-            <select id="m" class="p-4 rounded-xl font-bold text-center"></select>
-            <select id="y" class="p-4 rounded-xl font-bold text-center"></select>
+            <select id="d" class="p-4 rounded-xl font-bold text-center" onchange="saveState()"></select>
+            <select id="m" class="p-4 rounded-xl font-bold text-center" onchange="saveState()"></select>
+            <select id="y" class="p-4 rounded-xl font-bold text-center" onchange="saveState()"></select>
         </div>
 
         <div class="space-y-4 my-6">
@@ -172,6 +172,36 @@
     <audio id="click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
 
     <script>
+        // CÁC HÀM LƯU TRẠNG THÁI (Local Storage) ĐỂ CHỐNG REFRESH TRÊN ANDROID
+        function saveState() {
+            const state = {
+                game: document.getElementById('game').value,
+                ballsHTML: document.getElementById('balls').innerHTML,
+                status: document.getElementById('statusMsg').innerText,
+                d: document.getElementById('d').value,
+                m: document.getElementById('m').value,
+                y: document.getElementById('y').value,
+                theme: document.documentElement.className
+            };
+            localStorage.setItem('vietlott_ai_state', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('vietlott_ai_state');
+            if (saved) {
+                const state = JSON.parse(saved);
+                document.getElementById('game').value = state.game;
+                document.getElementById('balls').innerHTML = state.ballsHTML;
+                document.getElementById('statusMsg').innerText = state.status;
+                document.getElementById('d').value = state.d;
+                document.getElementById('m').value = state.m;
+                document.getElementById('y').value = state.y;
+                document.documentElement.className = state.theme;
+                const icon = document.getElementById('themeIcon');
+                icon.className = state.theme.includes('dark') ? 'fas fa-moon' : 'fas fa-sun';
+            }
+        }
+
         const canvas = document.getElementById('fireworks');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -205,42 +235,34 @@
 
         function updateNetworkIcon() {
             const icon = document.getElementById('netIcon');
-            const statusText = document.getElementById('statusMsg');
             const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-            
             if (connection) {
                 const type = connection.type || connection.effectiveType;
-                if (type.includes('wifi')) {
-                    icon.className = "fas fa-wifi text-gold opacity-40 text-5xl animate-pulse";
-                } else {
-                    icon.className = "fas fa-signal text-gold opacity-40 text-5xl animate-pulse";
-                }
-            } else {
-                icon.className = "fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse";
+                icon.className = (type.includes('wifi')) ? "fas fa-wifi text-gold opacity-40 text-5xl animate-pulse" : "fas fa-signal text-gold opacity-40 text-5xl animate-pulse";
             }
-            statusText.innerText = "Hệ thống sẵn sàng";
+            saveState();
         }
 
-        // HÀM LÀM MỚI APP THỦ CÔNG
         function refreshApp() {
             haptic();
-            // Xoay icon nút refresh để tạo hiệu ứng phản hồi
             const btnIcon = document.querySelector('.fa-sync-alt');
             btnIcon.style.transition = "transform 0.5s ease";
             btnIcon.style.transform = "rotate(360deg)";
+            setTimeout(() => { btnIcon.style.transform = "rotate(0deg)"; btnIcon.style.transition = "none"; }, 500);
             
-            setTimeout(() => {
-                btnIcon.style.transform = "rotate(0deg)";
-                btnIcon.style.transition = "none";
-            }, 500);
-
-            // Đưa app về trạng thái ban đầu
             document.getElementById('balls').innerHTML = '<i id="netIcon" class="fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse"></i>';
             document.getElementById('statusMsg').innerText = "Hệ thống sẵn sàng";
             updateNetworkIcon();
+            saveState();
         }
 
+        const dd=document.getElementById('d'), mm=document.getElementById('m'), yy=document.getElementById('y');
+        for(let i=1;i<=31;i++) dd.innerHTML+=`<option value="${i}">${i}</option>`;
+        for(let i=1;i<=12;i++) mm.innerHTML+=`<option value="${i}">Tháng ${i}</option>`;
+        for(let i=2026;i>=1960;i--) yy.innerHTML+=`<option value="${i}">Năm ${i}</option>`;
+
         window.onload = () => {
+            loadState(); // Khôi phục dữ liệu cũ nếu có
             updateNetworkIcon();
             setTimeout(() => {
                 const splash = document.getElementById('splash');
@@ -266,12 +288,8 @@
             const isDark = document.documentElement.classList.toggle('dark');
             document.documentElement.classList.toggle('light');
             document.getElementById('themeIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+            saveState();
         }
-
-        const dd=document.getElementById('d'), mm=document.getElementById('m'), yy=document.getElementById('y');
-        for(let i=1;i<=31;i++) dd.innerHTML+=`<option value="${i}">${i}</option>`;
-        for(let i=1;i<=12;i++) mm.innerHTML+=`<option value="${i}">Tháng ${i}</option>`;
-        for(let i=2026;i>=1960;i--) yy.innerHTML+=`<option value="${i}">Năm ${i}</option>`;
 
         function run(mode) {
             haptic();
@@ -279,7 +297,7 @@
             const status = document.getElementById('statusMsg');
             const game = document.getElementById('game').value;
             field.innerHTML = '<div class="w-10 h-10 border-4 border-gold border-t-transparent rounded-full animate-spin"></div>';
-            status.innerText = "Đang phân tích dữ liệu AI...";
+            status.innerText = "AI đang phân tích dữ liệu...";
 
             setTimeout(() => {
                 field.innerHTML = '';
@@ -307,9 +325,10 @@
                         field.appendChild(b);
                         
                         if(i === nums.length - 1) {
-                            status.innerText = "Kết quả phân tích may mắn";
+                            status.innerText = "Gợi ý may mắn hoàn tất";
                             document.getElementById('success').play().catch(()=>{});
                             createFireworks(); animateFireworks();
+                            saveState(); // Lưu kết quả cuối cùng
                         }
                     }, i * 100);
                 });
