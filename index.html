@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vietlott AI Trực Tiếp</title>
+    <title>Vietlott AI Trực Tiếp - Bronze Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
@@ -12,63 +12,75 @@
         :root { --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom); }
         
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-        html, body { height: 100%; margin: 0; padding: 0; background-color: #000; overflow: hidden; font-family: 'Lexend', sans-serif; }
+        html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; font-family: 'Lexend', sans-serif; transition: all 0.4s ease; }
         
-        /* Splash Screen cố định */
-        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.4s ease; }
-        .splash-logo { width: 180px; height: 180px; border-radius: 40px; animation: pulse 1.2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px #FFD700); } 50% { transform: scale(1.03); filter: drop-shadow(0 0 20px #FFD700); } }
+        /* Chế độ Tối */
+        .dark body { background-color: #0a0a0a; color: #ffffff; }
+        /* Chế độ Sáng */
+        .light body { background-color: #f0f4f8; color: #1a202c; }
+        /* Chế độ ĐỒNG SÁNG (Mới) */
+        .bronze body { background: linear-gradient(135deg, #4a3020 0%, #2a1b12 100%); color: #ffe4c4; }
 
-        .app-container { height: 100%; display: flex; flex-direction: column; padding: var(--safe-top) 1.2rem var(--safe-bottom) 1.2rem; max-width: 500px; margin: 0 auto; opacity: 0; visibility: hidden; transition: opacity 0.4s ease; }
-        .app-visible { opacity: 1 !important; visibility: visible !important; }
+        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .splash-logo { width: 160px; height: 160px; border-radius: 35px; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); filter: brightness(1.2); } 100% { transform: scale(1); } }
 
-        .dark body { background-color: #000; color: white; }
-        .light body { background-color: #f8fafc; color: #0f172a; }
+        .app-container { height: 100%; display: flex; flex-direction: column; padding: var(--safe-top) 1.2rem var(--safe-bottom) 1.2rem; max-width: 500px; margin: 0 auto; opacity: 0; transition: opacity 0.5s; }
+        .app-visible { opacity: 1 !important; }
 
-        .result-box { flex: 1; margin: 0.8rem 0; border-radius: 2.5rem; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; border: 2px solid rgba(255, 215, 0, 0.5); padding: 20px; transition: background 0.3s; }
-        .dark .result-box { background: rgba(30, 30, 30, 0.6); }
-        .light .result-box { background: white; border-color: #cbd5e1; }
+        /* Khung Kết Quả */
+        .result-box { flex: 1; margin: 0.8rem 0; border-radius: 2.5rem; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; border: 2px solid; transition: all 0.3s; }
+        .dark .result-box { background: rgba(255, 255, 255, 0.05); border-color: #FFD700; }
+        .light .result-box { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .bronze .result-box { background: rgba(205, 127, 50, 0.15); border-color: #cd7f32; box-shadow: 0 0 20px rgba(205, 127, 50, 0.3); }
 
-        .bg-icon { position: absolute; width: 85%; height: 85%; top: 50%; left: 50%; transform: translate(-50%, -50%); object-fit: contain; pointer-events: none; z-index: 0; transition: opacity 0.3s; }
-        .dark .bg-icon { opacity: 0.35; filter: contrast(1.1); }
-        .light .bg-icon { opacity: 0.45; filter: contrast(1.2); }
+        /* Tên Game */
+        #gameNameDisplay { font-weight: 900; font-size: 0.9rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 2px; z-index: 10; color: #FFD700; }
+        .bronze #gameNameDisplay { color: #f4a460; text-shadow: 0 0 8px rgba(244, 164, 96, 0.5); }
 
-        #statusMsg { font-weight: 900; text-transform: uppercase; font-size: 10px; letter-spacing: 0.1em; z-index: 10; margin-top: 10px; }
-        .dark #statusMsg { color: #fff; }
-        .light #statusMsg { color: #1e293b; }
+        .bg-icon { position: absolute; width: 80%; opacity: 0.3; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 0; }
 
-        .ball { animation: pop 0.3s forwards; width: 3rem; height: 3rem; background: #FFD700; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 2px solid #000; z-index: 10; }
-        @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .ball { width: 3.2rem; height: 3.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 2px solid #000; z-index: 10; animation: ballIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .dark .ball, .light .ball { background: #FFD700; color: #000; }
+        .bronze .ball { background: linear-gradient(135deg, #cd7f32 0%, #f4a460 100%); color: #fff; border-color: #3d2b1f; }
+        @keyframes ballIn { from { transform: scale(0) rotate(-180deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
 
-        .ctrl-btn { width: 3rem; height: 3rem; border-radius: 1rem; background: #FFD700; color: #000; display: flex; align-items: center; justify-content: center; border: none; outline: none; }
-        .btn-main { background: #FFD700; color: #000; font-weight: 900; box-shadow: 4px 4px 0px #000; width: 100%; padding: 1.2rem; border-radius: 1.5rem; text-transform: uppercase; font-size: 1.2rem; border: none; }
-        .btn-sub { padding: 1rem; border-radius: 1rem; font-weight: 900; color: #fff; font-size: 10px; text-transform: uppercase; border: none; }
-        
-        select { background: transparent; width: 100%; padding: 1rem; border-radius: 1rem; font-weight: 900; -webkit-appearance: none; outline: none; }
-        .dark select { border: 2px solid #333; color: white; background: #1a1a1a; }
-        .light select { border: 2px solid #cbd5e1; color: black; background: white; }
+        .ctrl-btn { width: 3.2rem; height: 3.2rem; border-radius: 1.1rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; border: none; }
+        .dark .ctrl-btn, .light .ctrl-btn { background: #FFD700; color: #000; }
+        .bronze .ctrl-btn { background: #cd7f32; color: #fff; box-shadow: 0 4px 0 #8b4513; }
+        .bronze .ctrl-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8b4513; }
+
+        .btn-main { width: 100%; padding: 1.3rem; border-radius: 1.5rem; font-weight: 900; text-transform: uppercase; font-size: 1.2rem; transition: 0.2s; border: none; }
+        .dark .btn-main, .light .btn-main { background: #FFD700; color: #000; box-shadow: 4px 4px 0 #000; }
+        .bronze .btn-main { background: linear-gradient(to right, #cd7f32, #f4a460); color: #fff; box-shadow: 0 6px 0 #8b4513; }
+        .bronze .btn-main:active { transform: translateY(3px); box-shadow: 0 2px 0 #8b4513; }
+
+        select { width: 100%; padding: 1rem; border-radius: 1.2rem; font-weight: 900; -webkit-appearance: none; outline: none; border: 2px solid; }
+        .dark select { background: #1a1a1a; border-color: #333; color: #fff; }
+        .light select { background: #fff; border-color: #cbd5e1; color: #000; }
+        .bronze select { background: #3d2b1f; border-color: #cd7f32; color: #ffe4c4; }
     </style>
 </head>
 <body class="dark">
 
     <div id="splash">
         <img src="icon.png" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2313/2313982.png'">
-        <h2 class="text-gold mt-6 font-black italic uppercase">Vietlott AI Trực Tiếp</h2>
+        <h1 class="text-gold mt-6 font-black italic uppercase tracking-widest" style="color:#FFD700">Vietlott AI</h1>
     </div>
 
-    <div id="appBody" class="app-container">
+    <div id="app" class="app-container">
         <header class="py-4 flex justify-between items-center">
             <div>
-                <div class="bg-vRed px-2 py-0.5 rounded text-white font-black italic text-[9px] animate-pulse w-fit" style="background-color: #d32f2f;">KẾT NỐI TRỰC TIẾP</div>
-                <h1 class="font-900 text-xl tracking-tighter uppercase">Vietlott AI</h1>
+                <div class="bg-red-600 px-2 py-0.5 rounded text-white font-black italic text-[10px] animate-pulse w-fit">KẾT NỐI AI LIVE</div>
+                <h1 class="font-900 text-2xl tracking-tighter uppercase">Vietlott AI</h1>
             </div>
             <div class="flex gap-2">
-                <button onclick="manualRefresh()" class="ctrl-btn"><i class="fas fa-sync-alt" id="refIcon"></i></button>
-                <button onclick="toggleTheme()" class="ctrl-btn"><i id="themeIcon" class="fas fa-moon"></i></button>
+                <button onclick="uiRefresh()" class="ctrl-btn"><i class="fas fa-sync-alt" id="refIcon"></i></button>
+                <button onclick="nextTheme()" class="ctrl-btn"><i id="tIcon" class="fas fa-moon"></i></button>
             </div>
         </header>
 
-        <select id="game" class="mb-2" onchange="saveAppSession()">
+        <select id="gameSelect" class="mb-2" onchange="onGameChange()">
             <option value="MEGA">MEGA 6/45</option>
             <option value="POWER">POWER 6/55</option>
             <option value="LOTTO">LOTTO 5/35</option>
@@ -79,195 +91,160 @@
         </select>
 
         <div class="result-box">
-            <canvas id="fireworks" style="position:absolute; inset:0; pointer-events:none; z-index:5;"></canvas>
             <img src="icon.png" class="bg-icon" onerror="this.style.display='none'">
-            <div id="balls" class="flex flex-wrap justify-center gap-2 p-4 relative z-10">
+            <div id="gameNameDisplay">ĐANG CHỜ...</div>
+            <div id="ballArea" class="flex flex-wrap justify-center gap-2 p-4 relative z-10">
                 <i id="netIcon" class="fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse"></i>
             </div>
-            <p id="statusMsg" class="mt-2 italic">Hệ thống sẵn sàng</p>
+            <p id="statusMsg" class="mt-2 font-black text-[11px] uppercase opacity-70 italic">Hệ thống sẵn sàng</p>
         </div>
 
         <div class="grid grid-cols-3 gap-2 mb-4">
-            <select id="d" onchange="saveAppSession()"></select>
-            <select id="m" onchange="saveAppSession()"></select>
-            <select id="y" onchange="saveAppSession()"></select>
+            <select id="d"></select>
+            <select id="m"></select>
+            <select id="y"></select>
         </div>
 
         <div class="space-y-3 pb-4">
-            <button id="btnAi" onclick="run('ai')" class="btn-main">AI Phân Tích</button>
+            <button onclick="predict('ai')" class="btn-main active:scale-95">Phân Tích AI</button>
             <div class="grid grid-cols-2 gap-3">
-                <button id="btnDob" onclick="run('dob')" class="btn-sub" style="background-color: #007bff;">Số Ngày Sinh</button>
-                <button id="btnJackpot" onclick="run('jackpot')" class="btn-sub" style="background-color: #d32f2f;">Jackpot AI</button>
+                <button onclick="predict('dob')" class="py-4 rounded-2xl font-black text-[10px] uppercase bg-blue-600 text-white active:scale-95">Theo Ngày Sinh</button>
+                <button onclick="predict('jackpot')" class="py-4 rounded-2xl font-black text-[10px] uppercase bg-red-600 text-white active:scale-95">Jackpot AI</button>
             </div>
         </div>
     </div>
 
-    <audio id="success" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
-    <audio id="click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
-
     <script>
-        // --- CƠ CHẾ LƯU TRỮ CHỐNG TREO ANDROID ---
-        const SESSION_KEY = 'vietlott_v3_stable';
+        const STORAGE_KEY = 'vietlott_ultra_v5';
         
-        function saveAppSession() {
-            try {
-                const data = {
-                    game: document.getElementById('game').value,
-                    balls: document.getElementById('balls').innerHTML,
-                    status: document.getElementById('statusMsg').innerText,
-                    d: document.getElementById('d').value,
-                    m: document.getElementById('m').value,
-                    y: document.getElementById('y').value,
-                    isDark: document.documentElement.classList.contains('dark')
-                };
-                localStorage.setItem(SESSION_KEY, JSON.stringify(data));
-            } catch (e) { console.error("Lỗi lưu trữ"); }
-        }
-
-        function restoreAppSession() {
-            try {
-                const saved = localStorage.getItem(SESSION_KEY);
-                if (!saved) return false;
-                const data = JSON.parse(saved);
-                document.getElementById('game').value = data.game;
-                document.getElementById('balls').innerHTML = data.balls;
-                document.getElementById('statusMsg').innerText = data.status;
-                document.getElementById('d').value = data.d;
-                document.getElementById('m').value = data.m;
-                document.getElementById('y').value = data.y;
-                if (data.isDark) {
-                    document.documentElement.className = 'dark';
-                    document.getElementById('themeIcon').className = 'fas fa-moon';
-                } else {
-                    document.documentElement.className = 'light';
-                    document.getElementById('themeIcon').className = 'fas fa-sun';
-                }
-                return true;
-            } catch (e) { return false; }
-        }
-
-        // --- PHÁO HOA TỐI GIẢN (CHỐNG TREO) ---
-        const canvas = document.getElementById('fireworks');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        function initCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-
-        function triggerBoom() {
-            particles = [];
-            const colors = ['#FFD700', '#FFFFFF', '#FF3131'];
-            for(let i=0; i<25; i++) {
-                particles.push({
-                    x: canvas.width/2, y: canvas.height/2,
-                    vx: (Math.random()-0.5)*8, vy: (Math.random()-0.5)*8,
-                    a: 1, c: colors[Math.floor(Math.random()*3)]
-                });
+        // --- QUẢN LÝ THEME (3 Chế độ) ---
+        function nextTheme() {
+            const b = document.body.parentElement;
+            const icon = document.getElementById('tIcon');
+            if(b.classList.contains('dark')) {
+                b.className = 'light';
+                icon.className = 'fas fa-sun';
+            } else if(b.classList.contains('light')) {
+                b.className = 'bronze';
+                icon.className = 'fas fa-shield-alt';
+            } else {
+                b.className = 'dark';
+                icon.className = 'fas fa-moon';
             }
-            function draw() {
-                if (particles.length === 0) return;
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                particles.forEach((p, i) => {
-                    p.x += p.vx; p.y += p.vy; p.a -= 0.02;
-                    if (p.a <= 0) particles.splice(i, 1);
-                    else {
-                        ctx.globalAlpha = p.a; ctx.fillStyle = p.c;
-                        ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, 7); ctx.fill();
-                    }
-                });
-                requestAnimationFrame(draw);
-            }
-            draw();
+            saveState();
         }
 
-        // --- HÀM CORE ---
-        function updateNetworkState() {
-            const icon = document.getElementById('netIcon');
-            if (!icon) return;
-            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-            if (conn) {
-                const type = conn.effectiveType || '';
-                icon.className = (type.includes('4g') || type.includes('5g') || type.includes('cellular')) 
-                    ? "fas fa-signal text-gold opacity-40 text-5xl animate-pulse" 
-                    : "fas fa-wifi text-gold opacity-40 text-5xl animate-pulse";
-            }
+        // --- LƯU TRẠNG THÁI CHỐNG REFRESH ---
+        function saveState() {
+            const state = {
+                game: document.getElementById('gameSelect').value,
+                gameName: document.getElementById('gameNameDisplay').innerText,
+                balls: document.getElementById('ballArea').innerHTML,
+                status: document.getElementById('statusMsg').innerText,
+                theme: document.body.parentElement.className,
+                d: document.getElementById('d').value,
+                m: document.getElementById('m').value,
+                y: document.getElementById('y').value
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         }
 
-        function manualRefresh() {
+        function restoreState() {
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            if(!data) { onGameChange(); return; }
+            
+            document.getElementById('gameSelect').value = data.game;
+            document.getElementById('gameNameDisplay').innerText = data.gameName;
+            document.getElementById('ballArea').innerHTML = data.balls;
+            document.getElementById('statusMsg').innerText = data.status;
+            document.body.parentElement.className = data.theme;
+            document.getElementById('d').value = data.d;
+            document.getElementById('m').value = data.m;
+            document.getElementById('y').value = data.y;
+            
+            const icon = document.getElementById('tIcon');
+            if(data.theme === 'dark') icon.className = 'fas fa-moon';
+            else if(data.theme === 'light') icon.className = 'fas fa-sun';
+            else icon.className = 'fas fa-shield-alt';
+        }
+
+        function onGameChange() {
+            const sel = document.getElementById('gameSelect');
+            document.getElementById('gameNameDisplay').innerText = sel.options[sel.selectedIndex].text;
+            saveState();
+        }
+
+        function uiRefresh() {
             const icon = document.getElementById('refIcon');
-            icon.style.transform = "rotate(360deg)";
-            setTimeout(() => { icon.style.transform="rotate(0deg)"; }, 500);
-            document.getElementById('balls').innerHTML = '<i id="netIcon" class="fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse"></i>';
+            icon.style.transform = 'rotate(360deg)';
+            icon.style.transition = '0.5s';
+            setTimeout(() => { icon.style.transform = 'rotate(0deg)'; icon.style.transition = '0s'; }, 500);
+            
+            document.getElementById('ballArea').innerHTML = '<i id="netIcon" class="fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse"></i>';
             document.getElementById('statusMsg').innerText = "Hệ thống sẵn sàng";
-            updateNetworkState();
-            saveAppSession();
-        }
-
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            document.documentElement.classList.toggle('light');
-            document.getElementById('themeIcon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
-            saveAppSession();
+            onGameChange();
         }
 
         // --- KHỞI CHẠY ---
-        window.addEventListener('load', () => {
-            // Setup Selects
+        window.onload = () => {
             const dd=document.getElementById('d'), mm=document.getElementById('m'), yy=document.getElementById('y');
             for(let i=1;i<=31;i++) dd.innerHTML+=`<option value="${i}">${i}</option>`;
-            for(let i=1;i<=12;i++) mm.innerHTML+=`<option value="${i}">Tháng ${i}</option>`;
-            for(let i=2026;i>=1960;i--) yy.innerHTML+=`<option value="${i}">Năm ${i}</option>`;
+            for(let i=1;i<=12;i++) mm.innerHTML+=`<option value="${i}">T. ${i}</option>`;
+            for(let i=2026;i>=1965;i--) yy.innerHTML+=`<option value="${i}">Năm ${i}</option>`;
 
-            restoreAppSession();
-            initCanvas();
-            updateNetworkState();
+            restoreState();
 
-            // Mở app sau 0.8s
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
-                document.getElementById('appBody').classList.add('app-visible');
-                setTimeout(() => { document.getElementById('splash').style.display='none'; }, 400);
+                document.getElementById('app').classList.add('app-visible');
+                setTimeout(() => document.getElementById('splash').style.display='none', 500);
             }, 800);
-        });
+        };
 
-        function run(mode) {
-            const field = document.getElementById('balls');
+        // --- LOGIC PHÂN TÍCH ---
+        function predict(mode) {
+            const area = document.getElementById('ballArea');
             const status = document.getElementById('statusMsg');
-            field.innerHTML = '<div class="w-10 h-10 border-4 border-gold border-t-transparent rounded-full animate-spin"></div>';
-            status.innerText = "AI đang xử lý dữ liệu...";
+            const game = document.getElementById('gameSelect').value;
+            const gameFullTitle = document.getElementById('gameSelect').options[document.getElementById('gameSelect').selectedIndex].text;
+            
+            area.innerHTML = '<div class="w-10 h-10 border-4 border-gold border-t-transparent rounded-full animate-spin"></div>';
+            status.innerText = "Đang kết nối AI...";
+            document.getElementById('gameNameDisplay').innerText = "ĐANG PHÂN TÍCH " + game;
 
             setTimeout(() => {
-                field.innerHTML = '';
-                const game = document.getElementById('game').value;
+                area.innerHTML = '';
                 const cfg = {
-                    'MEGA': [45,6], 'POWER': [55,6], 'LOTTO': [35,5], 'MAX3D': [9,3],
-                    'MAX3DPRO': [9,6], 'KENO': [80,20], 'BINGO18': [6,3]
+                    'MEGA':[45,6], 'POWER':[55,6], 'LOTTO':[35,5], 'MAX3D':[9,3],
+                    'MAX3DPRO':[9,6], 'KENO':[80,20], 'BINGO18':[6,3]
                 }[game];
-                
-                let nums = [];
-                let s = mode==='dob' ? parseInt(document.getElementById('d').value + document.getElementById('m').value) : Date.now();
-                const rng = () => { s=(s*16807)%2147483647; return s/2147483647; };
 
-                while(nums.length < cfg[1]) {
+                let res = [];
+                let seed = mode === 'dob' ? parseInt(dd.value + mm.value + yy.value) : Date.now();
+                const rng = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+
+                while(res.length < cfg[1]) {
                     let n = Math.floor(rng() * (cfg[0] + (game.includes('MAX')?1:0))) + (game.includes('MAX')?0:1);
-                    if(game.includes('MAX') || game==='BINGO18') nums.push(n);
-                    else if(!nums.includes(n)) nums.push(n);
+                    if(game.includes('MAX') || game === 'BINGO18') res.push(n);
+                    else if(!res.includes(n)) res.push(n);
                 }
-                if(!game.includes('MAX') && game!=='BINGO18') nums.sort((a,b)=>a-b);
+                if(!game.includes('MAX') && game !== 'BINGO18') res.sort((a,b)=>a-b);
 
-                nums.forEach((n, i) => {
+                res.forEach((num, i) => {
                     setTimeout(() => {
                         const b = document.createElement('div');
                         b.className = `ball ${game==='KENO'?'w-8 h-8 text-[10px]':'w-12 h-12 text-lg'}`;
-                        b.innerText = n < 10 ? '0'+n : n;
-                        field.appendChild(b);
-                        if(i === nums.length-1) {
-                            status.innerText = "Kết quả gợi ý hoàn tất";
-                            triggerBoom();
-                            try { document.getElementById('success').play(); } catch(e){}
-                            saveAppSession();
+                        b.innerText = num < 10 ? '0'+num : num;
+                        area.appendChild(b);
+                        
+                        if(i === res.length - 1) {
+                            status.innerText = "Phân tích hoàn tất!";
+                            document.getElementById('gameNameDisplay').innerText = gameFullTitle;
+                            saveState();
                         }
-                    }, i * 100);
+                    }, i * 120);
                 });
-            }, 800);
+            }, 1000);
         }
     </script>
 </body>
