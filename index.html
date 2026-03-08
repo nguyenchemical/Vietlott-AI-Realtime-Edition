@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Vietlott AI Trực Tiếp - Bronze Edition</title>
+    <title>Vietlott AI Trực Tiếp - Bản Ổn Định</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
@@ -15,72 +15,67 @@
         html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; font-family: 'Lexend', sans-serif; transition: all 0.4s ease; }
         
         /* Chế độ Tối */
-        .dark body { background-color: #0a0a0a; color: #ffffff; }
+        .dark body { background-color: #0d0d0d; color: #ffffff; }
         /* Chế độ Sáng */
-        .light body { background-color: #f0f4f8; color: #1a202c; }
-        /* Chế độ ĐỒNG SÁNG (Mới) */
-        .bronze body { background: linear-gradient(135deg, #4a3020 0%, #2a1b12 100%); color: #ffe4c4; }
+        .light body { background-color: #f7fafc; color: #1a202c; }
+        /* Chế độ ĐỒNG SÁNG (Mới - rực rỡ hơn) */
+        .bronze body { background: linear-gradient(135deg, #a65e2e 0%, #e6a15c 100%); color: #fff; }
 
         #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .splash-logo { width: 160px; height: 160px; border-radius: 35px; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); filter: brightness(1.2); } 100% { transform: scale(1); } }
+        .splash-logo { width: 150px; height: 150px; border-radius: 35px; animation: pulse 1.2s infinite ease-in-out; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
 
         .app-container { height: 100%; display: flex; flex-direction: column; padding: var(--safe-top) 1.2rem var(--safe-bottom) 1.2rem; max-width: 500px; margin: 0 auto; opacity: 0; transition: opacity 0.5s; }
         .app-visible { opacity: 1 !important; }
 
-        /* Khung Kết Quả */
         .result-box { flex: 1; margin: 0.8rem 0; border-radius: 2.5rem; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; border: 2px solid; transition: all 0.3s; }
-        .dark .result-box { background: rgba(255, 255, 255, 0.05); border-color: #FFD700; }
+        .dark .result-box { background: rgba(255, 255, 255, 0.03); border-color: #FFD700; }
         .light .result-box { background: #ffffff; border-color: #cbd5e1; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .bronze .result-box { background: rgba(205, 127, 50, 0.15); border-color: #cd7f32; box-shadow: 0 0 20px rgba(205, 127, 50, 0.3); }
+        .bronze .result-box { background: rgba(255, 255, 255, 0.2); border-color: #ffffff; backdrop-filter: blur(10px); }
 
-        /* Tên Game */
-        #gameNameDisplay { font-weight: 900; font-size: 0.9rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 2px; z-index: 10; color: #FFD700; }
-        .bronze #gameNameDisplay { color: #f4a460; text-shadow: 0 0 8px rgba(244, 164, 96, 0.5); }
+        #gameNameDisplay { font-weight: 900; font-size: 0.9rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; z-index: 10; color: #FFD700; }
+        .bronze #gameNameDisplay { color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-        .bg-icon { position: absolute; width: 80%; opacity: 0.3; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 0; }
-
-        .ball { width: 3.2rem; height: 3.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 2px solid #000; z-index: 10; animation: ballIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .ball { width: 3.2rem; height: 3.2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; border: 2px solid #000; z-index: 10; animation: ballIn 0.3s forwards; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         .dark .ball, .light .ball { background: #FFD700; color: #000; }
-        .bronze .ball { background: linear-gradient(135deg, #cd7f32 0%, #f4a460 100%); color: #fff; border-color: #3d2b1f; }
-        @keyframes ballIn { from { transform: scale(0) rotate(-180deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+        .bronze .ball { background: #ffffff; color: #a65e2e; border-color: #ffffff; }
+        @keyframes ballIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        .ctrl-btn { width: 3.2rem; height: 3.2rem; border-radius: 1.1rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; border: none; }
+        .ctrl-btn { width: 3.2rem; height: 3.2rem; border-radius: 1.1rem; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; }
         .dark .ctrl-btn, .light .ctrl-btn { background: #FFD700; color: #000; }
-        .bronze .ctrl-btn { background: #cd7f32; color: #fff; box-shadow: 0 4px 0 #8b4513; }
-        .bronze .ctrl-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8b4513; }
+        .bronze .ctrl-btn { background: rgba(255, 255, 255, 0.25); color: #fff; }
 
-        .btn-main { width: 100%; padding: 1.3rem; border-radius: 1.5rem; font-weight: 900; text-transform: uppercase; font-size: 1.2rem; transition: 0.2s; border: none; }
-        .dark .btn-main, .light .btn-main { background: #FFD700; color: #000; box-shadow: 4px 4px 0 #000; }
-        .bronze .btn-main { background: linear-gradient(to right, #cd7f32, #f4a460); color: #fff; box-shadow: 0 6px 0 #8b4513; }
-        .bronze .btn-main:active { transform: translateY(3px); box-shadow: 0 2px 0 #8b4513; }
+        .btn-main { width: 100%; padding: 1.2rem; border-radius: 1.4rem; font-weight: 900; text-transform: uppercase; font-size: 1.1rem; border: none; transition: 0.2s; }
+        .dark .btn-main, .light .btn-main { background: #FFD700; color: #000; box-shadow: 0 5px 0 #b39700; }
+        .bronze .btn-main { background: #ffffff; color: #a65e2e; box-shadow: 0 5px 0 #824924; }
+        .btn-main:active { transform: translateY(3px); box-shadow: 0 2px 0 transparent; }
 
-        select { width: 100%; padding: 1rem; border-radius: 1.2rem; font-weight: 900; -webkit-appearance: none; outline: none; border: 2px solid; }
+        select { width: 100%; padding: 0.9rem; border-radius: 1rem; font-weight: 900; -webkit-appearance: none; outline: none; border: 2px solid; }
         .dark select { background: #1a1a1a; border-color: #333; color: #fff; }
         .light select { background: #fff; border-color: #cbd5e1; color: #000; }
-        .bronze select { background: #3d2b1f; border-color: #cd7f32; color: #ffe4c4; }
+        .bronze select { background: rgba(255, 255, 255, 0.2); border-color: #fff; color: #fff; }
     </style>
 </head>
 <body class="dark">
 
     <div id="splash">
         <img src="icon.png" class="splash-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2313/2313982.png'">
-        <h1 class="text-gold mt-6 font-black italic uppercase tracking-widest" style="color:#FFD700">Vietlott AI</h1>
+        <h1 class="text-gold mt-6 font-black italic uppercase tracking-wider" style="color:#FFD700">Vietlott AI</h1>
     </div>
 
     <div id="app" class="app-container">
         <header class="py-4 flex justify-between items-center">
             <div>
-                <div class="bg-red-600 px-2 py-0.5 rounded text-white font-black italic text-[10px] animate-pulse w-fit">KẾT NỐI AI LIVE</div>
+                <div class="bg-red-600 px-2 py-0.5 rounded text-white font-black italic text-[9px] animate-pulse w-fit">AI LIVE TRỰC TIẾP</div>
                 <h1 class="font-900 text-2xl tracking-tighter uppercase">Vietlott AI</h1>
             </div>
             <div class="flex gap-2">
-                <button onclick="uiRefresh()" class="ctrl-btn"><i class="fas fa-sync-alt" id="refIcon"></i></button>
+                <button onclick="uiReset()" class="ctrl-btn"><i class="fas fa-redo-alt"></i></button>
                 <button onclick="nextTheme()" class="ctrl-btn"><i id="tIcon" class="fas fa-moon"></i></button>
             </div>
         </header>
 
-        <select id="gameSelect" class="mb-2" onchange="onGameChange()">
+        <select id="gameSelect" class="mb-2" onchange="syncTitle()">
             <option value="MEGA">MEGA 6/45</option>
             <option value="POWER">POWER 6/55</option>
             <option value="LOTTO">LOTTO 5/35</option>
@@ -90,109 +85,92 @@
             <option value="BINGO18">BINGO 18</option>
         </select>
 
-        <div class="result-box">
-            <img src="icon.png" class="bg-icon" onerror="this.style.display='none'">
-            <div id="gameNameDisplay">ĐANG CHỜ...</div>
+        <div class="result-box text-center">
+            <div id="gameNameDisplay">SẴN SÀNG</div>
             <div id="ballArea" class="flex flex-wrap justify-center gap-2 p-4 relative z-10">
-                <i id="netIcon" class="fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse"></i>
+                <i class="fas fa-satellite-dish text-gold opacity-30 text-5xl animate-pulse"></i>
             </div>
-            <p id="statusMsg" class="mt-2 font-black text-[11px] uppercase opacity-70 italic">Hệ thống sẵn sàng</p>
+            <p id="statusMsg" class="mt-2 font-black text-[10px] uppercase opacity-60 italic">Đã kết nối máy chủ AI</p>
         </div>
 
         <div class="grid grid-cols-3 gap-2 mb-4">
-            <select id="d"></select>
-            <select id="m"></select>
-            <select id="y"></select>
+            <select id="dSelect"></select>
+            <select id="mSelect"></select>
+            <select id="ySelect"></select>
         </div>
 
-        <div class="space-y-3 pb-4">
-            <button onclick="predict('ai')" class="btn-main active:scale-95">Phân Tích AI</button>
+        <div class="space-y-3 pb-6">
+            <button onclick="startPredict('ai')" class="btn-main">Phân Tích AI</button>
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="predict('dob')" class="py-4 rounded-2xl font-black text-[10px] uppercase bg-blue-600 text-white active:scale-95">Theo Ngày Sinh</button>
-                <button onclick="predict('jackpot')" class="py-4 rounded-2xl font-black text-[10px] uppercase bg-red-600 text-white active:scale-95">Jackpot AI</button>
+                <button onclick="startPredict('dob')" class="py-4 rounded-2xl font-black text-[10px] uppercase bg-blue-600 text-white active:opacity-80">Theo Ngày Sinh</button>
+                <button onclick="startPredict('jackpot')" class="py-4 rounded-2xl font-black text-[10px] uppercase bg-red-600 text-white active:opacity-80">Jackpot AI</button>
             </div>
         </div>
     </div>
 
     <script>
-        const STORAGE_KEY = 'vietlott_ultra_v5';
-        
-        // --- QUẢN LÝ THEME (3 Chế độ) ---
+        const STORAGE_KEY = 'vietlott_final_stable_v1';
+
+        // Khởi tạo ngày tháng
+        const d = document.getElementById('dSelect'), m = document.getElementById('mSelect'), y = document.getElementById('ySelect');
+        for(let i=1;i<=31;i++) d.innerHTML+=`<option value="${i}">${i}</option>`;
+        for(let i=1;i<=12;i++) m.innerHTML+=`<option value="${i}">Tháng ${i}</option>`;
+        for(let i=2026;i>=1960;i--) y.innerHTML+=`<option value="${i}">${i}</option>`;
+
         function nextTheme() {
-            const b = document.body.parentElement;
+            const body = document.documentElement;
             const icon = document.getElementById('tIcon');
-            if(b.classList.contains('dark')) {
-                b.className = 'light';
-                icon.className = 'fas fa-sun';
-            } else if(b.classList.contains('light')) {
-                b.className = 'bronze';
-                icon.className = 'fas fa-shield-alt';
+            if(body.classList.contains('dark')) {
+                body.className = 'light'; icon.className = 'fas fa-sun';
+            } else if(body.classList.contains('light')) {
+                body.className = 'bronze'; icon.className = 'fas fa-shield-alt';
             } else {
-                b.className = 'dark';
-                icon.className = 'fas fa-moon';
+                body.className = 'dark'; icon.className = 'fas fa-moon';
             }
-            saveState();
+            saveAppState();
         }
 
-        // --- LƯU TRẠNG THÁI CHỐNG REFRESH ---
-        function saveState() {
+        function syncTitle() {
+            const sel = document.getElementById('gameSelect');
+            document.getElementById('gameNameDisplay').innerText = sel.options[sel.selectedIndex].text;
+            saveAppState();
+        }
+
+        function saveAppState() {
             const state = {
                 game: document.getElementById('gameSelect').value,
-                gameName: document.getElementById('gameNameDisplay').innerText,
+                gameText: document.getElementById('gameNameDisplay').innerText,
                 balls: document.getElementById('ballArea').innerHTML,
                 status: document.getElementById('statusMsg').innerText,
-                theme: document.body.parentElement.className,
-                d: document.getElementById('d').value,
-                m: document.getElementById('m').value,
-                y: document.getElementById('y').value
+                theme: document.documentElement.className,
+                d: d.value, m: m.value, y: y.value
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         }
 
-        function restoreState() {
-            const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
-            if(!data) { onGameChange(); return; }
-            
-            document.getElementById('gameSelect').value = data.game;
-            document.getElementById('gameNameDisplay').innerText = data.gameName;
-            document.getElementById('ballArea').innerHTML = data.balls;
-            document.getElementById('statusMsg').innerText = data.status;
-            document.body.parentElement.className = data.theme;
-            document.getElementById('d').value = data.d;
-            document.getElementById('m').value = data.m;
-            document.getElementById('y').value = data.y;
-            
-            const icon = document.getElementById('tIcon');
-            if(data.theme === 'dark') icon.className = 'fas fa-moon';
-            else if(data.theme === 'light') icon.className = 'fas fa-sun';
-            else icon.className = 'fas fa-shield-alt';
-        }
-
-        function onGameChange() {
-            const sel = document.getElementById('gameSelect');
-            document.getElementById('gameNameDisplay').innerText = sel.options[sel.selectedIndex].text;
-            saveState();
-        }
-
-        function uiRefresh() {
-            const icon = document.getElementById('refIcon');
-            icon.style.transform = 'rotate(360deg)';
-            icon.style.transition = '0.5s';
-            setTimeout(() => { icon.style.transform = 'rotate(0deg)'; icon.style.transition = '0s'; }, 500);
-            
-            document.getElementById('ballArea').innerHTML = '<i id="netIcon" class="fas fa-satellite-dish text-gold opacity-40 text-5xl animate-pulse"></i>';
+        function uiReset() {
+            document.getElementById('ballArea').innerHTML = '<i class="fas fa-satellite-dish text-gold opacity-30 text-5xl animate-pulse"></i>';
             document.getElementById('statusMsg').innerText = "Hệ thống sẵn sàng";
-            onGameChange();
+            syncTitle();
         }
 
-        // --- KHỞI CHẠY ---
         window.onload = () => {
-            const dd=document.getElementById('d'), mm=document.getElementById('m'), yy=document.getElementById('y');
-            for(let i=1;i<=31;i++) dd.innerHTML+=`<option value="${i}">${i}</option>`;
-            for(let i=1;i<=12;i++) mm.innerHTML+=`<option value="${i}">T. ${i}</option>`;
-            for(let i=2026;i>=1965;i--) yy.innerHTML+=`<option value="${i}">Năm ${i}</option>`;
-
-            restoreState();
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if(saved) {
+                const s = JSON.parse(saved);
+                document.getElementById('gameSelect').value = s.game;
+                document.getElementById('gameNameDisplay').innerText = s.gameText;
+                document.getElementById('ballArea').innerHTML = s.balls;
+                document.getElementById('statusMsg').innerText = s.status;
+                document.documentElement.className = s.theme;
+                d.value = s.d; m.value = s.m; y.value = s.y;
+                const icon = document.getElementById('tIcon');
+                if(s.theme === 'dark') icon.className = 'fas fa-moon';
+                else if(s.theme === 'light') icon.className = 'fas fa-sun';
+                else icon.className = 'fas fa-shield-alt';
+            } else {
+                syncTitle();
+            }
 
             setTimeout(() => {
                 document.getElementById('splash').style.opacity = '0';
@@ -201,48 +179,52 @@
             }, 800);
         };
 
-        // --- LOGIC PHÂN TÍCH ---
-        function predict(mode) {
+        function startPredict(mode) {
             const area = document.getElementById('ballArea');
             const status = document.getElementById('statusMsg');
             const game = document.getElementById('gameSelect').value;
-            const gameFullTitle = document.getElementById('gameSelect').options[document.getElementById('gameSelect').selectedIndex].text;
             
-            area.innerHTML = '<div class="w-10 h-10 border-4 border-gold border-t-transparent rounded-full animate-spin"></div>';
-            status.innerText = "Đang kết nối AI...";
-            document.getElementById('gameNameDisplay').innerText = "ĐANG PHÂN TÍCH " + game;
+            // Hiện loading
+            area.innerHTML = '<div class="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin"></div>';
+            status.innerText = "AI đang xử lý...";
 
             setTimeout(() => {
                 area.innerHTML = '';
-                const cfg = {
+                const config = {
                     'MEGA':[45,6], 'POWER':[55,6], 'LOTTO':[35,5], 'MAX3D':[9,3],
                     'MAX3DPRO':[9,6], 'KENO':[80,20], 'BINGO18':[6,3]
                 }[game];
 
-                let res = [];
-                let seed = mode === 'dob' ? parseInt(dd.value + mm.value + yy.value) : Date.now();
-                const rng = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+                let results = [];
+                // Công thức seed an toàn chống treo
+                let seedVal = mode === 'dob' ? (Number(d.value) + Number(m.value) * 31 + Number(y.value)) : Date.now();
+                
+                const random = () => {
+                    seedVal = (seedVal * 16807) % 2147483647;
+                    return seedVal / 2147483647;
+                };
 
-                while(res.length < cfg[1]) {
-                    let n = Math.floor(rng() * (cfg[0] + (game.includes('MAX')?1:0))) + (game.includes('MAX')?0:1);
-                    if(game.includes('MAX') || game === 'BINGO18') res.push(n);
-                    else if(!res.includes(n)) res.push(n);
+                while(results.length < config[1]) {
+                    let n = Math.floor(random() * (config[0] + (game.includes('MAX') ? 1 : 0))) + (game.includes('MAX') ? 0 : 1);
+                    if(game.includes('MAX') || game === 'BINGO18') {
+                        results.push(n);
+                    } else if(!results.includes(n)) {
+                        results.push(n);
+                    }
                 }
-                if(!game.includes('MAX') && game !== 'BINGO18') res.sort((a,b)=>a-b);
+                if(!game.includes('MAX') && game !== 'BINGO18') results.sort((a,b) => a-b);
 
-                res.forEach((num, i) => {
+                results.forEach((num, i) => {
                     setTimeout(() => {
                         const b = document.createElement('div');
                         b.className = `ball ${game==='KENO'?'w-8 h-8 text-[10px]':'w-12 h-12 text-lg'}`;
                         b.innerText = num < 10 ? '0'+num : num;
                         area.appendChild(b);
-                        
-                        if(i === res.length - 1) {
-                            status.innerText = "Phân tích hoàn tất!";
-                            document.getElementById('gameNameDisplay').innerText = gameFullTitle;
-                            saveState();
+                        if(i === results.length - 1) {
+                            status.innerText = "Gợi ý hoàn tất!";
+                            saveAppState();
                         }
-                    }, i * 120);
+                    }, i * 80);
                 });
             }, 1000);
         }
